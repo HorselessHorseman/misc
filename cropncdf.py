@@ -40,8 +40,12 @@ def weirdIndices(index, variable, nc):
 nc = Dataset(args.path[0])
 #print(str(weirdIndices(20080000, "time", nc = Dataset(args.path[0]))))
 # make slice objects for convenience
+
 if args.lon:
-    lon = slice(*[weirdIndices(int(i), "lon", nc) for i in re.findall("\d+", args.lon)])
+    if len(re.findall("\d+", args.lon)) == 2:
+        lon = slice(*[weirdIndices(int(i), "lon", nc) for i in re.findall("\d+", args.lon)])
+    elif len(re.findall("\d+", args.lon)) == 1:
+         lon = slice(weirdIndices(int(re.findall("\d+", args.lon)[0]), "lon", nc), weirdIndices(int(re.findall("\d+", args.lon)[0]), "lon", nc)+1)
 else:
     lon = slice(None)
 if args.lat:
@@ -52,7 +56,7 @@ if args.time:
     time = slice(*[weirdIndices(int(i), "time", nc) for i in re.findall("\d+", args.time)])
 else:
     time = slice(None)
-
+#print(lon)
 if args.output:
     with open(args.output, "w") as output:
         for i in args.path:
