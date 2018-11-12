@@ -40,7 +40,8 @@ def weirdIndices(index, variable, nc):
 nc = Dataset(args.path[0])
 #print(str(weirdIndices(20080000, "time", nc = Dataset(args.path[0]))))
 # make slice objects for convenience
-
+def processArgs(arg, regexp="\d+"):
+    if len
 if args.lon:
     if len(re.findall("\d+", args.lon)) == 2:
         lon = slice(*[weirdIndices(int(i), "lon", nc) for i in re.findall("\d+", args.lon)])
