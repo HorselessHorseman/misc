@@ -10,7 +10,7 @@ for i, arg in enumerate(sys.argv):      # workaround to parse negative numbers
 
 #describe and parse arguments
 parser = argparse.ArgumentParser(description="Crop ncdf files and export to plain text.")
-parser.add_argument("path", nargs="+", help="paths to ncdf files")
+parser.add_argument("path", nargs="+", type=argparse.FileType('w'), help="paths to ncdf files")
 parser.add_argument("--dc", help="decimal separator(default: comma)")
 parser.add_argument("--lon", help="longitude")
 parser.add_argument("--lat", help="latitude", type=str)
@@ -40,8 +40,16 @@ def weirdIndices(index, variable, nc):
 nc = Dataset(args.path[0])
 #print(str(weirdIndices(20080000, "time", nc = Dataset(args.path[0]))))
 # make slice objects for convenience
-def processArgs(arg, regexp="\d+"):
-    if len
+def parse_arg(arg, dimension, regex="\d+"):
+    global nc
+    if arg:
+        if len(re.findall(regex, arg)) == 2:
+            return slice(*[weirdIndices(int(i), dimension, nc) for i in re.findall(regex, arg)])
+        elif len(re.findall(regex, arg)) == 1:
+            return slice(weirdIndices(int(re.findall(regex, arg)[0]), dimension, nc), weirdIndices(int(re.findall(regex, arg)[0]), dimension, nc)+1)
+    else:
+        return slice(None)
+
 if args.lon:
     if len(re.findall("\d+", args.lon)) == 2:
         lon = slice(*[weirdIndices(int(i), "lon", nc) for i in re.findall("\d+", args.lon)])
